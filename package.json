@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --watch app.js",
-    "start_db": "node db/seed.js"
+    "make_teams": "node db/seedTeams.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
     "pg": "^8.16.3"
   }
 }
