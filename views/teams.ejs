@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+  <div class="allTeams">
+    <% teams.forEach(t=> { %>
+      <div class="clip">
+        <div class="teambody">
+          <div class="flexRow">
+            <h3>
+              <%= t.trainer %>
+            </h3>
+
+            <form method="GET" action="/teams/catch-pokemon"
+              onsubmit="return checkIfTooManyPokemon(<%= t.team.length %>)">
+              <input type="hidden" name="trainerName" value="<%= t.trainer %>" />
+              <button type="submit" class="addPokemon">+ Pokémon</button>
+            </form>
+          </div>
+
+          <div class="pokemons">
+            <% t.team.forEach(pokemon=> { %>
+              <% if (t.team.length > 0) { %>
+                <div class="pokemon">
+                  <div onclick="alert('Clicked!')"
+                    style="position: relative; height: <%= ballSize %>; width: <%= ballSize %>;">
+                    <img src="<%= pokemon.sprite %>" alt="<%= pokemon.name %>"
+                      style="position:absolute; top:0; left:0; width:<%= ballSize %>; height:<%= ballSize %>; object-fit:contain;" />
+
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
+                      style="position: absolute; top:0; left:0; width:<%= ballSize %>; height:<%= ballSize %>;">
+                      <circle cx="100" cy="100" r="95" fill="none" stroke="black" stroke-width="5" />
+                      <path d="M5,100 a95,95 0 0,1 190,0" fill="red" fill-opacity="0.4" stroke="black"
+                        stroke-width="3" />
+                      <path d="M5,100 a95,95 0 0,0 190,0" fill="white" fill-opacity="0.2" stroke="black"
+                        stroke-width="3" />
+                      <circle cx="100" cy="100" r="25" fill="white" fill-opacity="0.4" stroke="black"
+                        stroke-width="5" />
+                    </svg>
+                  </div>
+                </div>
+                <% } %>
+                  <% }) %>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+  </div>
+
+  <a href="/"><button>Go Home</button></a>
+  <a href="/teams/new-team"><button>New Team</button></a>
+
+  <script>
+    const checkIfTooManyPokemon = (length) => {
+      if (length >= 6) {
+        alert("You already have 6 Pokémon on this team!");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>
+
+</html>

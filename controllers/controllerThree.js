@@ -1,6 +1,6 @@
 
 function renderIndex(req, res) {
-  res.render("pageThree", { title: "Route Three Index" });
+  res.render("pageTwo", { title: "Route Three Index" });
 }
 
 module.exports = {

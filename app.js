@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const app = express();
 const path = require("node:path");
-const { routeOne } = require("./routes/routeOne");
+const { teamRoute } = require("./routes/teamRoute");
 const { routeTwo } = require("./routes/routeTwo");
 const { routeThree } = require("./routes/routeThree");
 
@@ -12,9 +12,12 @@ const assetsPath = path.join(__dirname, "public");
 app.use(express.static(assetsPath));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/", routeOne);
+app.use("/teams", teamRoute);
 app.use("/two", routeTwo);
 app.use("/three", routeThree);
+app.get("/", (req, res) => {
+  res.render('index', { title: "index" })
+})
 app.get('/{*splat}', (req, res, next) => {
   const err = new Error(`Page not found: ${req.originalUrl}`);
   err.statusCode = 404

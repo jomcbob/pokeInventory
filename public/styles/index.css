@@ -1,58 +1,100 @@
 body::-webkit-scrollbar {
-    width: 12px;
-    background: transparent;
+  width: 12px;
+  background: transparent;
 }
 
 body::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 body::-webkit-scrollbar-thumb {
-    background-color: red;
-    border-radius: 6px;
+  background-color: red;
+  border-radius: 6px;
 }
 
 
 body {
-      background: url('../assets/background.png') no-repeat center center fixed;
-      background-size: cover;
+  background: url('../assets/background.png') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  min-height: 100vh;
+  animation: showPage 0.6s linear forwards;
+}
+
+@keyframes showPage {
+  0% {
+      transform: translate(0, -10%);
+  }
+
+  50% {
+      transform: translate(0, -5%);
+  }
+
+  100% {
+      transform: translate(0, 0);
+  }
+}
+
+.allTeams {
   display: flex;
-  flex-wrap: wrap;           /* allow clips to wrap */
-  gap: 1rem;
+  flex-wrap: wrap;
   padding: 1rem;
   margin: 0;
+  overflow: hidden;
+  gap: 1rem;
+}
+
+.allTeams h3 {
+  color: white;
+  font-size: x-large;
+  margin: 0;
+  transform: translate(-20px, 0);
 }
 
 .clip {
-  display: flex;             /* make clip a flex item */
+  flex-shrink: 0;
+  display: flex;
   flex-direction: column;
-  flex: 1 1 auto;            /* grow and shrink as needed */
-  min-width: 300px;           /* prevent shrinking too small */
+  flex: 1 1 auto;
+  min-width: 500px;
   clip-path: polygon(0% 0%, 80% 0%, 100% 100%, 20% 100%);
-  background-color: green;
-  box-sizing: border-box;
-  height: fit-content;
+  background: linear-gradient(rgb(0, 128, 0, 0.5), rgba(68, 149, 68, 0.9));
   margin: 0;
-    z-index: 10;
+  z-index: 10;
+  box-sizing: border-box;
 }
 
 .teambody {
   display: flex;
   flex-direction: column;
-  padding: 0 20%;
-  width: 100%;               /* fill the clip container */
+  padding: 10px 20%;
+  width: 100%;
+  min-width: fit-content;
   box-sizing: border-box;
   flex-shrink: 0;
   z-index: 10;
+  gap: 0.5rem;
 }
 
 .pokemons {
   display: flex;
-  flex-wrap: nowrap;         /* Pokémon never wrap */
+  flex-wrap: nowrap;
   gap: 0.5rem;
-  overflow-x: auto;  
-  z-index: 1000;        /* optional: scroll if too many Pokémon */
+  overflow-x: auto;
+  z-index: 1000;
 }
 
+.flexRow {
+  display: flex;
+  justify-content: space-between;
+}
 
-
+.addPokemon {
+  margin-right: 5rem;
+  background: rgb(0, 0, 0, 0.4);
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  font-size: large;
+}

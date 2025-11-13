@@ -1,10 +1,9 @@
 const pool = require("./pool");
 require("dotenv").config();
 
-async function dbGetAllCards() {
+async function dbGetAllPokemon() {
   try {
     const { rows } = await pool.query("SELECT * FROM pokemon_cards");
-    console.log(rows)
     return rows;
   } catch (err) {
     console.error(err)
@@ -15,7 +14,6 @@ async function dbGetAllCards() {
 async function dbGetCardByName(name) {
   try {
     const { rows } = await pool.query("SELECT * FROM pokemon_cards WHERE name = $1", [name]);
-    console.log(rows)
     return rows || null;
   } catch (err) {
     console.error(err);
@@ -27,25 +25,28 @@ async function dbGetAllTeams() {
   const getTeamsSQL = `
 SELECT
   t.trainer,
-  json_agg(
-    json_build_object(
-      'name', p.name,
-      'types', p.types,
-      'sprite', p.sprite,
-      'stage', p.stage
-    )
+  COALESCE(
+    json_agg(
+      json_build_object(
+        'name', p.name,
+        'types', p.types,
+        'sprite', p.sprite,
+        'stage', p.stage
+      )
+    ) FILTER (WHERE p.id IS NOT NULL),
+    '[]'
   ) AS team,
   t.created_at AS team_created_at
 FROM teams t
-JOIN team_pokemons tp ON t.id = tp.team_id
-JOIN pokemon_cards p ON tp.pokemon_id = p.id
+LEFT JOIN team_pokemons tp ON t.id = tp.team_id
+LEFT JOIN pokemon_cards p ON tp.pokemon_id = p.id
 GROUP BY t.id
 ORDER BY t.id;
+
 `;
 
   try {
     const { rows } = await pool.query(getTeamsSQL);
-    console.log(JSON.stringify(rows, null, 2));
     return rows;
   } catch (err) {
     console.error(err);
@@ -67,7 +68,11 @@ async function addTrainer(trainerName) {
 
 async function checkIfTeamIsFull(trainerName) {
   const client = await pool.connect();
-  const countRes = await client.query(`SELECT id FROM teams WHERE LOWER(trainer) = LOWER($1)`, [trainerName]);
+  const countRes = await client.query(
+    `SELECT COUNT(*) AS count FROM team_pokemons 
+   WHERE team_id = (SELECT id FROM teams WHERE LOWER(trainer) = LOWER($1))`,
+    [trainerName]
+  );
   const currentCount = parseInt(countRes.rows[0].count, 10);
 
   console.log(`DEBUG: Team ${trainerName} has ${currentCount} Pokémon`);
@@ -89,6 +94,7 @@ async function addPokemonToTeam(trainerName, pokemonName) {
     const teamId = teamRes.rows[0].id;
 
     // Get Pokémon ID from pokemon_cards
+    console.log('pokemon name' + " " + pokemonName)
     const pokeRes = await client.query(`SELECT id FROM pokemon_cards WHERE LOWER(name) = LOWER($1)`, [pokemonName]);
     if (!pokeRes.rows[0]) throw new Error("Pokémon not found");
     const pokeId = pokeRes.rows[0].id;
@@ -106,13 +112,26 @@ async function addPokemonToTeam(trainerName, pokemonName) {
   }
 }
 
+async function dbGetRandomPokemonName(req, res) {
+    const client = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `SELECT name FROM pokemon_cards ORDER BY RANDOM() LIMIT 1;`,
+    );
+    return rows[0].name
+  } finally {
+    client.release();
+  }
+}
+
 
 
 module.exports = {
-  dbGetAllCards,
+  dbGetAllPokemonNames: dbGetAllPokemon,
   dbGetCardByName,
   dbGetAllTeams,
   addPokemonToTeam,
   addTrainer,
-  checkIfTeamIsFull
+  checkIfTeamIsFull,
+  dbGetRandomPokemonName
 };
