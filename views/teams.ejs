@@ -11,62 +11,112 @@
 </head>
 
 <body>
-  <div class="allTeams">
-    <% teams.forEach(t=> { %>
-      <div class="clip">
-        <div class="teambody">
-          <div class="flexRow">
-            <h3>
-              <%= t.trainer %>
-            </h3>
+  <div class="allTeams" id="allTeams"></div>
 
-            <form method="GET" action="/teams/catch-pokemon"
-              onsubmit="return checkIfTooManyPokemon(<%= t.team.length %>)">
-              <input type="hidden" name="trainerName" value="<%= t.trainer %>" />
-              <button type="submit" class="addPokemon">+ Pokémon</button>
-            </form>
-          </div>
-
-          <div class="pokemons">
-            <% t.team.forEach(pokemon=> { %>
-              <% if (t.team.length > 0) { %>
-                <div class="pokemon">
-                  <div onclick="alert('Clicked!')"
-                    style="position: relative; height: <%= ballSize %>; width: <%= ballSize %>;">
-                    <img src="<%= pokemon.sprite %>" alt="<%= pokemon.name %>"
-                      style="position:absolute; top:0; left:0; width:<%= ballSize %>; height:<%= ballSize %>; object-fit:contain;" />
-
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
-                      style="position: absolute; top:0; left:0; width:<%= ballSize %>; height:<%= ballSize %>;">
-                      <circle cx="100" cy="100" r="95" fill="none" stroke="black" stroke-width="5" />
-                      <path d="M5,100 a95,95 0 0,1 190,0" fill="red" fill-opacity="0.4" stroke="black"
-                        stroke-width="3" />
-                      <path d="M5,100 a95,95 0 0,0 190,0" fill="white" fill-opacity="0.2" stroke="black"
-                        stroke-width="3" />
-                      <circle cx="100" cy="100" r="25" fill="white" fill-opacity="0.4" stroke="black"
-                        stroke-width="5" />
-                    </svg>
-                  </div>
-                </div>
-                <% } %>
-                  <% }) %>
-          </div>
-        </div>
-      </div>
-      <% }) %>
+  <div class="pagination">
+    <button id="prevBtn" disabled>Previous</button>
+    <button id="nextBtn">Next</button>
   </div>
 
   <a href="/"><button>Go Home</button></a>
   <a href="/teams/new-team"><button>New Team</button></a>
 
   <script>
-    const checkIfTooManyPokemon = (length) => {
+    const teamsData = <%- JSON.stringify(teams) %>;
+    const ballSize = "<%= ballSize %>";
+
+    const allTeamsDiv = document.getElementById('allTeams');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentPage = 0;
+    const teamsPerPage = 10;
+    const teams = teamsData;
+
+    function renderTeams() {
+      allTeamsDiv.innerHTML = '';
+      const start = currentPage * teamsPerPage;
+      const end = start + teamsPerPage;
+      const pageTeams = teams.slice(start, end);
+
+      pageTeams.forEach(t => {
+        const teamDiv = document.createElement('div');
+        teamDiv.className = 'clip';
+        teamDiv.innerHTML = `
+      <div class="teambody">
+        <div class="flexRow">
+          <h3>${t.trainer}</h3>
+          <div class="flexRow">
+            <form method="GET" action="/teams/catch-pokemon" onsubmit="return checkIfTooManyPokemon(${t.team.length})">
+              <input type="hidden" name="trainerName" value="${t.trainer}" />
+              <button type="submit" class="addPokemon button-link">+ Pokémon</button>
+            </form>
+            <form method="GET" action="/teams/delete-team">
+              <input type="hidden" name="trainerName" value="${t.trainer}" />
+              <button type="submit" class="addPokemon button-link">- Pokémon</button>
+            </form>
+          </div>
+        </div>
+        <div class="pokemons">
+          ${t.team.map(pokemon => `
+            <div class="pokemon">
+              <div onclick="alert('${pokemon.name} clicked!')" style="position: relative; height: ${ballSize}; width: ${ballSize};">
+                <img src="${pokemon.sprite}" alt="${pokemon.name}" style="position:absolute; top:0; left:0; width:${ballSize}; height:${ballSize}; object-fit:contain;" />
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top:0; left:0; width:${ballSize}; height:${ballSize};">
+                  <circle cx="100" cy="100" r="95" fill="none" stroke="black" stroke-width="5" />
+                  <path d="M5,100 a95,95 0 0,1 190,0" fill="red" fill-opacity="0.4" stroke="black" stroke-width="3" />
+                  <path d="M5,100 a95,95 0 0,0 190,0" fill="white" fill-opacity="0.2" stroke="black" stroke-width="3" />
+                  <circle cx="100" cy="100" r="25" fill="white" fill-opacity="0.4" stroke="black" stroke-width="5" />
+                </svg>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+        allTeamsDiv.appendChild(teamDiv);
+      });
+
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = end >= teams.length;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        allTeamsDiv.classList.add('left-page');
+
+        renderTeams()
+
+        setTimeout(() => {
+          allTeamsDiv.classList.remove('left-page');
+        }, 600)
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if ((currentPage + 1) * teamsPerPage < teams.length) {
+        currentPage++;
+        allTeamsDiv.classList.add('right-page');
+
+        renderTeams();
+
+        setTimeout(() => {
+          allTeamsDiv.classList.remove('right-page');
+        }, 600)
+      }
+    });
+
+    function checkIfTooManyPokemon(length) {
       if (length >= 6) {
         alert("You already have 6 Pokémon on this team!");
         return false;
       }
       return true;
     }
+
+    renderTeams();
+
   </script>
 </body>
 

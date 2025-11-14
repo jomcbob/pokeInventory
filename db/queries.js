@@ -57,14 +57,26 @@ ORDER BY t.id;
 async function addTrainer(trainerName) {
   const client = await pool.connect();
   try {
-    await client.query(
-      `INSERT INTO teams (trainer) VALUES ($1) ON CONFLICT (trainer) DO NOTHING`,
+    // Check if a trainer with the same name (case-insensitive) already exists
+    const result = await client.query(
+      `SELECT 1 FROM teams WHERE LOWER(trainer) = LOWER($1)`,
       [trainerName]
     );
+
+    if (result.rowCount === 0) {
+      await client.query(
+        `INSERT INTO teams (trainer) VALUES ($1)`,
+        [trainerName]
+      );
+    } else {
+      console.log(`Trainer "${trainerName}" already exists.`);
+      return false
+    }
   } finally {
     client.release();
   }
 }
+
 
 async function checkIfTeamIsFull(trainerName) {
   const client = await pool.connect();
@@ -113,7 +125,7 @@ async function addPokemonToTeam(trainerName, pokemonName) {
 }
 
 async function dbGetRandomPokemonName(req, res) {
-    const client = await pool.connect();
+  const client = await pool.connect();
   try {
     const { rows } = await client.query(
       `SELECT name FROM pokemon_cards ORDER BY RANDOM() LIMIT 1;`,
@@ -124,6 +136,71 @@ async function dbGetRandomPokemonName(req, res) {
   }
 }
 
+async function deleteTeam(trainerName) {
+  const client = await pool.connect();
+  try {
+    return await client.query(
+      `DELETE FROM teams WHERE LOWER(trainer) = LOWER($1)`,
+      [trainerName]
+    );
+
+  } finally {
+    client.release();
+  }
+}
+
+async function lastPokemonOnTeamDeleted(trainerName) {
+  const client = await pool.connect();
+  try {
+    const countRes = await client.query(
+      `SELECT COUNT(*) AS count FROM team_pokemons 
+      WHERE team_id = (SELECT id FROM teams WHERE LOWER(trainer) = LOWER($1))`,
+      [trainerName]
+    );
+    const currentCount = parseInt(countRes.rows[0].count, 10);
+    return currentCount === 0;
+  } finally {
+    client.release();
+  }
+}
+
+async function deletePokemonFromTeam(trainerName, pokemonName) {
+  const client = await pool.connect();
+  try {
+    return await client.query(
+      `
+      DELETE FROM team_pokemons tp
+      USING teams t, pokemon_cards pc
+      WHERE tp.team_id = t.id
+        AND tp.pokemon_id = pc.id
+        AND LOWER(t.trainer) = LOWER($1)
+        AND LOWER(pc.name) = LOWER($2)
+      `,
+      [trainerName, pokemonName]
+    );
+  } finally {
+    client.release();
+  }
+}
+
+async function dbGetPokemonTeam(trainerName) {
+  const client = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT p.*
+      FROM pokemon_cards p
+      JOIN team_pokemons tp ON p.id = tp.pokemon_id
+      JOIN teams t ON tp.team_id = t.id
+      WHERE LOWER(t.trainer) = LOWER($1)
+      `,
+      [trainerName]
+    );
+    return rows;
+  } finally {
+    client.release();
+  }
+}
 
 
 module.exports = {
@@ -133,5 +210,9 @@ module.exports = {
   addPokemonToTeam,
   addTrainer,
   checkIfTeamIsFull,
-  dbGetRandomPokemonName
+  dbGetRandomPokemonName,
+  deleteTeam,
+  deletePokemonFromTeam,
+  dbGetPokemonTeam,
+  lastPokemonOnTeamDeleted
 };

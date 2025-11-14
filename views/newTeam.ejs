@@ -12,9 +12,14 @@
 
 <body>
   <form method="POST" action="/teams/new-team">
-    <input type="text" name="trainerName" />
-    <button type="submit" class="addTeam">Add Team</button>
+    <label for="trainerName"><h3>Trainer Name</h3></label>
+    <input autofocus placeholder="i.e Bob" type="text" id="trainerName" name="trainerName" />
+    <div class="buttons">
+      <button class="submit button-link" type="submit">Add Team</button>
+      <a href="/teams/" class="button-link">Go Back</a>
+    </div>
   </form>
+
 </body>
 
 </html>

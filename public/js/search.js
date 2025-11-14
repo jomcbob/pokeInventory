@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.onclick = () => {
         e.target.value = p.name; 
         searchMatches.innerHTML = '';
+        input.focus();
       }
 
       container.appendChild(text)
