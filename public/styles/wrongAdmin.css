@@ -9,7 +9,20 @@ body {
   flex-direction: column;
 }
 
-form {
+@keyframes growIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+h3 {
+  font-weight: 100;
+}
+
+.content {
   position: relative;
   text-align: start;
   background: linear-gradient(rgb(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
@@ -25,4 +38,19 @@ form {
   gap: 1rem;
   font-size: larger;
   color: white;
+  animation: growIn 0.5s ease forwards;
+}
+
+.submit {
+  background: rgb(255, 0, 0, 0.8);
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.submit:hover,
+.submit:focus {
+  background: rgb(255, 0, 0);
+  cursor: pointer;
 }

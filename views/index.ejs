@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/styles/index.css">
 </head>
+
 <body>
-  <a href="/teams"><button tabindex="-1">See Teams</button></a>
+  <%- include('partials/header', { links: [ { text: 'Teams' , href: '/teams' }, ] }) %>
+
+    <div class="sections">
+      <div class="PokeInventoryText">
+        <h1>Welcome to PokéInventory!</h1>
+        <p>Your one-stop app for managing your Pokémon teams and inventory.</p>
+        <ul>
+          <li><strong>Create and manage multiple teams:</strong> Easily create new teams, add or remove Pokémon, and
+            keep track of your favorite lineups.</li>
+          <li><strong>Pokémon inventory management:</strong> Store and organize all your caught Pokémon in one place,
+            making it easy to find and manage them.</li>
+          <li><strong>User-friendly interface:</strong> Navigate through the app with ease using our intuitive design
+            and layout.</li>
+        </ul>
+        <p>Get started by creating a new team or exploring your existing teams!</p>
+      </div>
+
+      <div class="PokeInventoryText">
+        <h2>About PokéInventory</h2>
+        <p>PokéInventory is designed for Pokémon trainers who want to keep their teams and inventory organized. Whether
+          you're a casual player or a competitive battler, our app provides the tools you need to manage your Pokémon
+          effectively.</p>
+        <p>With PokéInventory, you can focus on what matters most – training and battling with your favorite Pokémon!
+        </p>
+      </div>
+
+    </div>
 </body>
+
 </html>

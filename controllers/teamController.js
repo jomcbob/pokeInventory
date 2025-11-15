@@ -86,15 +86,28 @@ async function adminPasswordGet(req, res) {
 }
 
 async function adminPasswordPost(req, res, next) {
-  const { adminPassword, toBeDeleted } = req.body;
+  console.log(req.body)
+  const { adminPassword, toBeDeleted, trainerName, pokemonName } = req.body;
 
   if (adminPassword === process.env.ADMIN_PASSWORD && toBeDeleted.toLowerCase() === 'pokemon') {
     return deleteAfterAdminPassword(req, res, 'pokemon');
   } else if (adminPassword === process.env.ADMIN_PASSWORD && toBeDeleted.toLowerCase() === 'team') {
     return deleteAfterAdminPassword(req, res, 'team');
   } else {
-    res.status(401).send('Wrong Admin Password');
+    res.status(401).redirect(
+    '/teams/delete-team/admin-password/wrong?trainerName=' +
+    encodeURIComponent(trainerName) +
+    '&pokemonName=' +
+    encodeURIComponent(pokemonName) +
+    '&toBeDeleted=' +
+    encodeURIComponent(toBeDeleted)
+  );
   }
+}
+
+async function getWrongAdminPasswordPage(req, res) {
+  const { trainerName, pokemonName, toBeDeleted } = req.query;
+  res.render("wrongAdmin", { trainerName, pokemonName, toBeDeleted });
 }
 
 async function adminPasswordTodeletePokemonFromTeamPost(req, res, next) {
@@ -134,5 +147,6 @@ module.exports = {
   deleteTeamGet,
   adminPasswordTodeletePokemonFromTeamPost,
   adminPasswordGet,
-  adminPasswordPost
+  adminPasswordPost,
+  getWrongAdminPasswordPage
 }

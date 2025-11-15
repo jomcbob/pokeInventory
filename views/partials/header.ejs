@@ -1,0 +1,13 @@
+<header>
+  <nav>
+    <div><h3>PokéInventory</h3></div>
+    <div class="headerLinks">
+      <% links.forEach(link=> { %>
+        <a class="header-link" href="<%= link.href %>">
+          <%= link.text %>
+        </a>
+        <% }) %>
+
+    </div>
+  </nav>
+</header>

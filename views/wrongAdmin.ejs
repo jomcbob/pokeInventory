@@ -4,24 +4,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/wrongAdmin.css">
   <title>Incorrect Admin password!</title>
 </head>
 
 <body>
-  <div>
-    <h1>Incorrect Admin password!</h1>
-    <!-- <a href="/teams/delete-team/admin-password?trainerName=<%= trainerName %>">Go Back</a> -->
-<!-- 
-    <form class="pokemonToBeDeleted" method="POST" action="/teams/delete-team/admin-password">
-      <div>Free <%= teamMember.name %>
-      </div>
-      <img src="<%= teamMember.sprite %>" alt="">
+  <div class="content">
+    <h3>Incorrect Admin password!</h3>
+
+    <form class="pokemonToBeDeleted" method="get" action="/teams/delete-team/admin-password">
       <input type="hidden" name="trainerName" value="<%= trainerName %>">
       <input type="hidden" name="pokemonName" value="<%= pokemonName %>">
       <input type="hidden" name="toBeDeleted" value="<%= toBeDeleted %>">
-      <button type="submit">try again</button>
+      <button class="submit" type="submit">Try Again</button>
     </form>
-  </div> -->
+  </div>
 </body>
 
 </html>

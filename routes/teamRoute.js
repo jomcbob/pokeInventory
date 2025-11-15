@@ -12,4 +12,6 @@ teamRoute.post('/catch-pokemon', teamController.addPokemonPost)
 teamRoute.post('/delete-team', teamController.adminPasswordTodeletePokemonFromTeamPost)
 teamRoute.post('/delete-team/admin-password', teamController.adminPasswordPost)
 
+teamRoute.get('/delete-team/admin-password/wrong', teamController.getWrongAdminPasswordPage);
+
 module.exports = { teamRoute }
