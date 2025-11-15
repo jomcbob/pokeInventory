@@ -86,7 +86,6 @@ async function adminPasswordGet(req, res) {
 }
 
 async function adminPasswordPost(req, res, next) {
-  console.log(req.body)
   const { adminPassword, toBeDeleted, trainerName, pokemonName } = req.body;
 
   if (adminPassword === process.env.ADMIN_PASSWORD && toBeDeleted.toLowerCase() === 'pokemon') {

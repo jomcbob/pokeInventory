@@ -202,6 +202,34 @@ async function dbGetPokemonTeam(trainerName) {
   }
 }
 
+async function numberOfPokemonOnAllTeams() {
+    const client = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `
+        SELECT COUNT(*) FROM team_pokemons                                                                                                                                                                                                         ;
+      `
+    );
+    return parseInt(rows[0].count, 10);
+  } finally {
+    client.release();
+  }
+}
+
+async function numberOfTeams() {
+    const client = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `
+        SELECT COUNT(*) FROM teams                                                                                                                                                                                                      ;
+      `
+    );
+    return parseInt(rows[0].count, 10);
+  } finally {
+    client.release();
+  }
+}
+
 
 module.exports = {
   dbGetAllPokemonNames: dbGetAllPokemon,
@@ -214,5 +242,7 @@ module.exports = {
   deleteTeam,
   deletePokemonFromTeam,
   dbGetPokemonTeam,
-  lastPokemonOnTeamDeleted
+  lastPokemonOnTeamDeleted,
+  numberOfPokemonOnAllTeams,
+  numberOfTeams
 };

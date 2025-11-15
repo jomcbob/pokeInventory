@@ -6,32 +6,46 @@ document.addEventListener('DOMContentLoaded', () => {
     return pokemons.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
   };
 
-  input.addEventListener('input', (e) => {
-    if (e.target.value === '') {
-      searchMatches.innerHTML = ''
-      return
-    }
-    const matches = showPokemonThatMatchSearch(e.target.value);
-    searchMatches.innerHTML = ''
+input.addEventListener("input", (e) => {
+  const value = e.target.value.trim();
 
-    matches.forEach(p => {
-      const container = document.createElement('div');
-      const text = document.createElement('div');
-      const img = document.createElement('img');
+  if (!value) {
+    searchMatches.innerHTML = "";
+    return;
+  }
 
-      img.src = p.sprite
+  const matches = showPokemonThatMatchSearch(value);
+  searchMatches.innerHTML = "";
 
-      text.textContent = p.name;
+  const fragment = document.createDocumentFragment();
 
-      container.onclick = () => {
-        e.target.value = p.name; 
-        searchMatches.innerHTML = '';
-        input.focus();
-      }
+  matches.forEach((p) => {
+    const container = document.createElement("div");
+    container.className = "match"; // give it a class so you can style
 
-      container.appendChild(text)
-      container.appendChild(img)
-      searchMatches.appendChild(container);
-    });
+    const text = document.createElement("div");
+    text.textContent = p.name;
+
+    const img = document.createElement("img");
+    img.src = p.sprite;
+
+    container.append(text, img);
+    container.tabIndex = 0;
+
+    container.onclick = () => {
+      input.value = p.name;
+      searchMatches.innerHTML = "";
+      input.focus();
+    };
+
+    container.onkeydown = (ev) => {
+      if (ev.key === "Enter") container.click();
+    };
+
+    fragment.appendChild(container);
   });
+
+  searchMatches.appendChild(fragment);
+});
+
 });

@@ -117,6 +117,7 @@ async function fetchAllPokemon() {
   }
 
   console.log('✅ Done importing all Pokémon.');
+  return await client.end();
 }
 
 fetchAllPokemon();

@@ -5,8 +5,12 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch app.js",
-    "make_teams": "node db/seedTeams.js"
+    "start": "node --watch app.js remote",
+    "start_local": "node --watch app.js local",
+    "seed_remote": "node db/seed.js remote",
+    "seed_teams_remote": "node db/seedTeams.js remote",
+    "seed_local": "node db/seed.js local",
+    "seed_teams_local": "node db/seedTeams.js local"
   },
   "repository": {
     "type": "git",

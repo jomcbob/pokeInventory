@@ -5,6 +5,7 @@ const path = require("node:path");
 const { teamRoute } = require("./routes/teamRoute");
 const { routeTwo } = require("./routes/routeTwo");
 const { routeThree } = require("./routes/routeThree");
+const dbQueries = require('./db/queries');
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -16,9 +17,15 @@ app.use(express.json());
 app.use("/teams", teamRoute);
 app.use("/two", routeTwo);
 app.use("/three", routeThree);
-app.get("/", (req, res) => {
-  res.render('index', { title: "index" })
-})
+app.get("/", async (req, res, next) => {
+  try {
+    const numberOfPokemonOnAllTeams = await dbQueries.numberOfPokemonOnAllTeams();
+    const numberOfTeams = await dbQueries.numberOfTeams();  
+    res.render("index", { title: "Home", numberOfPokemonOnAllTeams, numberOfTeams });
+  } catch (err) {
+    next(err);
+  }
+});
 app.get('/{*splat}', (req, res, next) => {
   const err = new Error(`Page not found: ${req.originalUrl}`);
   err.statusCode = 404

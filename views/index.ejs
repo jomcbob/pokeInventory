@@ -15,7 +15,7 @@
 
     <div class="sections">
       <div class="PokeInventoryText">
-        <h1>Welcome to PokéInventory!</h1>
+        <h2>Welcome to PokéInventory!</h2>
         <p>Your one-stop app for managing your Pokémon teams and inventory.</p>
         <ul>
           <li><strong>Create and manage multiple teams:</strong> Easily create new teams, add or remove Pokémon, and
@@ -24,20 +24,42 @@
             making it easy to find and manage them.</li>
           <li><strong>User-friendly interface:</strong> Navigate through the app with ease using our intuitive design
             and layout.</li>
+          <li><strong>Note:</strong> anybody that’s visiting the site can Create, Update and Read any Team or Pokemon but you
+            must be an Admin to Delete any Team or Pokemon.</li>
         </ul>
-        <p>Get started by creating a new team or exploring your existing teams!</p>
+        <p>Get started by creating a new team or exploring the existing teams!</p>
       </div>
 
-      <div class="PokeInventoryText">
-        <h2>About PokéInventory</h2>
-        <p>PokéInventory is designed for Pokémon trainers who want to keep their teams and inventory organized. Whether
-          you're a casual player or a competitive battler, our app provides the tools you need to manage your Pokémon
-          effectively.</p>
-        <p>With PokéInventory, you can focus on what matters most – training and battling with your favorite Pokémon!
-        </p>
+      <h2 class="onlyTheStats">Only the Stats</h2>
+
+
+      <div class="stats">
+        <div class="stat">Total Teams: <strong id="total-teams">0</strong></div>
+        <div class="stat">Total Pokémon on All Teams: <strong id="total-pokemon">0</strong></div>
       </div>
 
-    </div>
+<script>
+  function animateCounter(elementId, targetNumber, duration) {
+    const element = document.getElementById(elementId);
+    let start = 0;
+    const stepTime = Math.abs(Math.floor(duration / targetNumber));
+
+    const timer = setInterval(() => {
+      start += 1;
+      element.textContent = start;
+      if (start >= targetNumber) {
+        clearInterval(timer);
+      }
+    }, stepTime);
+  }
+
+  const totalTeams = <%= numberOfTeams %>
+  const totalPokemon = <%= numberOfPokemonOnAllTeams %>
+
+  animateCounter("total-teams", totalTeams, 1000);
+  animateCounter("total-pokemon", totalPokemon, 1000);
+</script>
+
 </body>
 
 </html>
